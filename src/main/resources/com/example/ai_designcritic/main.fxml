@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane fx:id="rootPane" styleClass="root" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ai_designcritic.DesignController">
+    <!-- rest of your FXML -->
+    <top>
+        <VBox alignment="CENTER" spacing="15" styleClass="header-container">
+            <HBox alignment="CENTER" spacing="15">
+                <ImageView fitHeight="36" fitWidth="36" preserveRatio="true">
+                    <Image url="@power.png" />
+                </ImageView>
+                <Label styleClass="app-title" text="AI Design Critic" />
+            </HBox>
+
+            <HBox alignment="CENTER" spacing="25" styleClass="control-bar">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Button onAction="#uploadImage" styleClass="upload-btn" text="📁 Upload Design" />
+                    <Button fx:id="analyzeBtn" disable="true" onAction="#analyzeDesign" styleClass="analyze-btn" text="🔍 Analyze Design" />
+                </HBox>
+
+                <HBox alignment="CENTER_RIGHT" spacing="15">
+                    <ToggleButton fx:id="themeToggle" styleClass="theme-toggle" text="🌙" />
+                    <Button onAction="#showExampleFeedback" styleClass="secondary-btn" text="📋 Example" />
+                    <Button onAction="#clearFeedback" styleClass="secondary-btn" text="🗑 Clear All" />
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox alignment="CENTER" spacing="20" styleClass="main-container">
+            <!-- LEFT SIDE: IMAGE INPUT -->
+            <VBox fx:id="leftPanel" alignment="CENTER" spacing="20" styleClass="panel-left" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER" prefWidth="420.0" spacing="15" styleClass="image-section">
+                    <Label styleClass="section-title" text="Design Preview" />
+
+                    <StackPane styleClass="image-container-large">
+                        <Rectangle arcHeight="15" arcWidth="15" height="380" styleClass="image-placeholder" width="420" />
+                        <ImageView fx:id="imageView" fitHeight="360" fitWidth="400" preserveRatio="true" styleClass="design-image" />
+                        <VBox fx:id="placeholderOverlay" alignment="CENTER" spacing="10" styleClass="image-overlay" visible="true">
+                            <Label styleClass="upload-icon" text="📁" />
+                            <Label styleClass="placeholder-title" text="Upload your design" />
+                            <Label styleClass="placeholder-subtitle" text="Supports JPG, PNG, SVG formats" />
+                        </VBox>
+                    </StackPane>
+
+                    <HBox alignment="CENTER" spacing="10" styleClass="image-controls">
+                        <Button onAction="#uploadImage" styleClass="small-btn" text="Change Image" />
+                        <Label fx:id="fileNameLabel" styleClass="file-name" text="No file selected" />
+                    </HBox>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="10" styleClass="image-info">
+                    <Label styleClass="info-title" text="Upload Statistics" />
+                    <GridPane hgap="20" prefHeight="70.0" prefWidth="332.0" styleClass="stats-grid" vgap="8">
+                        <Label styleClass="stat-label" text="File Size:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label fx:id="fileSizeLabel" styleClass="stat-value" text="0 KB" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label styleClass="stat-label" text="Dimensions:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label fx:id="dimensionsLabel" styleClass="stat-value" text="0 x 0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Label styleClass="stat-label" text="Format:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Label fx:id="formatLabel" styleClass="stat-value" text="N/A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+                </VBox>
+            </VBox>
+
+            <!-- DIVIDER -->
+            <Separator orientation="VERTICAL" styleClass="panel-divider" />
+
+            <!-- RIGHT SIDE: FEEDBACK -->
+            <VBox fx:id="rightPanel" alignment="TOP_CENTER" spacing="20" styleClass="panel-right" HBox.hgrow="ALWAYS">
+
+                <VBox spacing="15" styleClass="feedback-section" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="feedback-header">
+                        <Label styleClass="feedback-title" text="🤖 AI Feedback" />
+                        <ProgressIndicator fx:id="loadingIndicator" styleClass="loading-indicator" visible="false" />
+                    </HBox>
+
+                    <TextArea fx:id="resultArea" editable="false" prefHeight="400.0" promptText="AI feedback will appear here..." styleClass="feedback-area" wrapText="true" VBox.vgrow="ALWAYS" />
+
+                    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="feedback-actions">
+                        <Button onAction="#copyFeedback" styleClass="action-btn" text="📋 Copy" />
+                        <Button onAction="#testTTS" styleClass="action-btn" text="🔊 Read Aloud" />
+                  <Button onAction="#stopTTS" prefHeight="40.0" prefWidth="108.0" styleClass="action-btn" text="Stop Audio" />
+                        <Button onAction="#exportToPdf" styleClass="action-btn" text="💾 Save Report" />
+                    </HBox>
+                </VBox>
+
+                <HBox alignment="TOP_LEFT" spacing="20" styleClass="critique-section">
+
+                    <VBox minWidth="320" spacing="10"> <Label styleClass="score-title" text="Design Score" />
+                        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="score-container">
+                            <StackPane styleClass="score-circle">
+                                <Circle radius="50" styleClass="score-background" /> <Label fx:id="scoreLabel" styleClass="score-value" text="--" />
+                            </StackPane>
+                            <VBox spacing="8" styleClass="score-breakdown">
+                                <Label styleClass="breakdown-title" text="Breakdown:" />
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <Label styleClass="breakdown-label" text="Visual:" />
+                                    <ProgressBar fx:id="visualScoreBar" progress="0" styleClass="score-bar" />
+                                    <Label fx:id="visualScoreLabel" styleClass="score-percent" text="0%" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <Label styleClass="breakdown-label" text="Usability:" />
+                                    <ProgressBar fx:id="usabilityScoreBar" progress="0" styleClass="score-bar" />
+                                    <Label fx:id="usabilityScoreLabel" styleClass="score-percent" text="0%" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <Label styleClass="breakdown-label" text="Creativity:" />
+                                    <ProgressBar fx:id="creativityScoreBar" progress="0" styleClass="score-bar" />
+                                    <Label fx:id="creativityScoreLabel" styleClass="score-percent" text="0%" />
+                                </HBox>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="10" styleClass="suggestions-box" HBox.hgrow="ALWAYS">
+                        <Label styleClass="suggestions-title" text="💡 Key Suggestions" />
+                        <ListView fx:id="suggestionsList" styleClass="suggestions-list" VBox.vgrow="ALWAYS">
+                            <placeholder>
+                                <Label text="Upload and analyze to get suggestions" />
+                            </placeholder>
+                        </ListView>
+                    </VBox>
+
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="20" styleClass="status-bar">
+            <Label fx:id="statusLabel" styleClass="status-label" text="Ready" />
+            <Separator orientation="VERTICAL" styleClass="status-separator" />
+            <Label styleClass="version-label" text="AI Design Critic v1.0" />
+        </HBox>
+    </bottom>
+</BorderPane>
