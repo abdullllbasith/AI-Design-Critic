@@ -34,5 +34,13 @@ build/
 ### VS Code ###
 .vscode/
 
+
+# Ignore all JSON keys in json folder
+json/*.json
+
+# Or more specific (recommended)
+json/*key*.json
+json/*client*.json
+
 ### Mac OS ###
 .DS_Store
